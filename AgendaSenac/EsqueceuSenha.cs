@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dot.Net._6.WF.Calendario.Senac;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,7 +31,7 @@ namespace AgendaSenac
                 if (usuario != null)
                 {
                     this.Close();
-                   // AbrirNovaSenha(usuario);
+                   AbrirNovaSenha(usuario);
 
 
                 }
@@ -41,11 +42,11 @@ namespace AgendaSenac
             }
         }
 
-        //private void AbrirNovaSenha(Usuario usuario)
-        //{
-        //    NovaSenha novaSenha = new NovaSenha(usuario);
-        //    novaSenha.Show();
-        //}
+        private void AbrirNovaSenha(Usuario usuario)
+        {
+            NovaSenha novaSenha = new NovaSenha(usuario);
+           novaSenha.Show();
+        }
 
         private void btnCancelar_Click(object sender, EventArgs e)
         {

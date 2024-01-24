@@ -119,6 +119,12 @@ namespace AgendaSenac
                 btnEntrar.PerformClick();
             }
         }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+            EsqueceuSenha esqueceuSenha = new EsqueceuSenha();
+            esqueceuSenha.Show();
+        }
     }
 }
 

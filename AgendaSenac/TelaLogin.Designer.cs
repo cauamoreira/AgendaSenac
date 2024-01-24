@@ -103,6 +103,7 @@
             label3.Size = new Size(129, 18);
             label3.TabIndex = 36;
             label3.Text = "Esqueceu a senha?";
+            label3.Click += label3_Click;
             // 
             // txtSenha
             // 
@@ -185,14 +186,14 @@
             label2.TabIndex = 30;
             label2.Text = "Senha:";
             // 
-            // Form1
+            // TelaLogin
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(703, 537);
             Controls.Add(panel1);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "Form1";
+            Name = "TelaLogin";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "SENAC";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();

@@ -766,7 +766,16 @@ namespace AgendaSenac
 
         private void acessoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (Autenticacao.UsuarioTemPermissaoAdministrador())
+            {
+                ControleAcesso controleAcesso = new ControleAcesso();
+                controleAcesso.Show();
+                this.Hide();
+            }
+            else
+            {
+                MessageBox.Show("Você não tem acesso administrador.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void cadastrarCursoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -774,10 +783,6 @@ namespace AgendaSenac
 
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
 
         private void Agenda_Load(object sender, EventArgs e)
         {

@@ -52,6 +52,15 @@ namespace AgendaSenac
 
                     bd.SaveChanges();
 
+                    AbrirFormPrincipal();
+
+                    ControleAcesso controleAcesso = Application.OpenForms.OfType<ControleAcesso>().FirstOrDefault();
+
+                    if (controleAcesso != null)
+                    {
+                        controleAcesso.CarregarHistorico();
+                    }
+
 
                 }
                 else
@@ -62,6 +71,13 @@ namespace AgendaSenac
                 LimparCampos();
 
             }
+        }
+
+        private void AbrirFormPrincipal()
+        {
+            Agenda agenda = new Agenda();
+            agenda.Show();
+            this.Hide();
         }
 
         private void LimparCampos()

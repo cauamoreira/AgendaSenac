@@ -1,5 +1,4 @@
-﻿using AgendaSenac;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,34 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dot.Net._6.WF.Calendario.Senac
+namespace AgendaSenac
 {
-
     public partial class NovaSenha : Form
     {
-
         private Usuario usuario;
         public NovaSenha(Usuario usuario)
         {
             InitializeComponent();
             this.usuario = usuario;
-
-        }
-
-        private void btnCancelar_Click(object sender, EventArgs e)
-        {
-            DialogResult resultado = MessageBox.Show("Deseja realmente cancelar?",
-                    "Alerta",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning);
-
-            if (resultado == DialogResult.Yes)
-            {
-                this.Close();
-                AbrirTelaLogin();
-
-            }
-
         }
 
         private void btnMudarSenha_Click(object sender, EventArgs e)
@@ -72,17 +52,31 @@ namespace Dot.Net._6.WF.Calendario.Senac
             }
         }
 
+        private void btnCancelar_Click(object sender, EventArgs e)
+        {
+            DialogResult resultado = MessageBox.Show("Deseja realmente cancelar?",
+                    "Alerta",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+            if (resultado == DialogResult.Yes)
+            {
+                this.Close();
+                AbrirTelaLogin();
+
+            }
+        }
+
         private void AbrirTelaLogin()
         {
             TelaLogin telaLogin = new TelaLogin();
             telaLogin.Show();
         }
 
-        private void NovaSenha_FormClosing(object sender, FormClosingEventArgs e)
+        private void NovSenha_FormClosing(object sender, FormClosingEventArgs e)
         {
             TelaLogin telaLogin = new TelaLogin();
             telaLogin.Show();
         }
     }
 }
-

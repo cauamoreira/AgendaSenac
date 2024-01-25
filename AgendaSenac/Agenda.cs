@@ -12,7 +12,7 @@ using DocumentFormat.OpenXml.Vml;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Globalization;
 using System.Collections.ObjectModel;
-using Dot.Net._6.WF.Calendario.Senac;
+
 
 namespace AgendaSenac
 {

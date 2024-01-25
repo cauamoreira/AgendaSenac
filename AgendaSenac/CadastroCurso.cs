@@ -1,5 +1,4 @@
-﻿using AgendaSenac;
-using DocumentFormat.OpenXml.Office2010.Excel;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Vml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System;
@@ -12,17 +11,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dot.Net._6.WF.Calendario.Senac
+namespace AgendaSenac
 {
     public partial class CadastroCurso : Form
     {
-        public CadastroCurso(Agenda agenda_De_Curso)
+        public CadastroCurso(Agenda agenda)
         {
-
             InitializeComponent();
-            agenda_De_Curso = agenda_De_Curso;
+            
             txtCadastroCurso.Focus();
-
         }
 
         private void AdicionarHistoricoNovoCurso(BancoDeDados bd, Curso curso)
@@ -37,72 +34,13 @@ namespace Dot.Net._6.WF.Calendario.Senac
             });
         }
 
-        private void AbrirFormAgendaCurso()
-        {
-            Agenda agenda_De_Curso = new Agenda();
-            agenda_De_Curso.Show();
-        }
-
-        private void Cadastramento_de_Cursos_Load(object sender, EventArgs e)
+        private void CadCurso_Load(object sender, EventArgs e)
         {
             Listar();
         }
-        private void Listar()
-        {
-            GridViewCadastroCurso.Rows.Clear();
-
-            using (var bd = new BancoDeDados())
-            {
-                var Curso = bd.Cursos.ToList();
-
-                foreach (var curso in Curso)
-                {
-                    GridViewCadastroCurso.Rows.Add(
-                        curso.Id,
-                        curso.Nome);
-                }
-
-            }
-        }
 
 
-        private void AdicionarHistoricoExclusaoCurso(BancoDeDados bd, Curso curso)
-        {
-            bd.Historicos.Add(new Historico
-            {
-                Login = Autenticacao.UsuarioAtual?.Login,
-                DataHora = DateTime.Now,
-                Alteracao = "Exclusão de Curso",
-                Detalhes = $"Excluído curso: {curso.Id}, Nome: {curso.Nome}"
-
-            });
-        }
-        private void GridViewCadastroCurso_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            txtId.Text = GridViewCadastroCurso.CurrentRow.Cells[0].Value.ToString();
-            txtCadastroCurso.Text = GridViewCadastroCurso.CurrentRow.Cells[1].Value.ToString();
-        }
-
-        private void LimparCampos()
-        {
-            txtId.Text = String.Empty;
-            txtCadastroCurso.Text = String.Empty;
-        }
-
-
-        private void AdicionarHistoricoAlteracaoCurso(BancoDeDados bd, Curso curso, string nomeOriginal)
-        {
-            bd.Historicos.Add(new Historico
-            {
-                Login = Autenticacao.UsuarioAtual?.Login,
-                DataHora = DateTime.Now,
-                Alteracao = "Alteração de Curso",
-                Detalhes = $"Alterado curso: Id {curso.Id}, Nome: {nomeOriginal} para {curso.Nome}"
-
-            });
-        }
-
-        private void btnAdicionarCurso_Click(object sender, EventArgs e)
+        private void btnAdicionar_Click(object sender, EventArgs e)
         {
             var nome = txtCadastroCurso.Text;
 
@@ -140,21 +78,19 @@ namespace Dot.Net._6.WF.Calendario.Senac
             }
         }
 
-        private void btnSairCurso_Click(object sender, EventArgs e)
+        private void AdicionarHistoricoAlteracaoCurso(BancoDeDados bd, Curso curso, string nomeOriginal)
         {
-            var sair = MessageBox.Show("Deseja realmente sair?",
-            "Alerta",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Warning);
-
-            if (sair == DialogResult.Yes)
+            bd.Historicos.Add(new Historico
             {
-                AbrirFormAgendaCurso();
-                this.Close();
-            }
+                Login = Autenticacao.UsuarioAtual?.Login,
+                DataHora = DateTime.Now,
+                Alteracao = "Alteração de Curso",
+                Detalhes = $"Alterado curso: Id {curso.Id}, Nome: {nomeOriginal} para {curso.Nome}"
+
+            });
         }
 
-        private void btnAlterarCurso_Click(object sender, EventArgs e)
+        private void btnAlterar_Click(object sender, EventArgs e)
         {
             string nome = txtCadastroCurso.Text;
 
@@ -183,7 +119,19 @@ namespace Dot.Net._6.WF.Calendario.Senac
             }
         }
 
-        private void btnExcluirCurso_Click(object sender, EventArgs e)
+        private void AdicionarHistoricoExclusaoCurso(BancoDeDados bd, Curso curso)
+        {
+            bd.Historicos.Add(new Historico
+            {
+                Login = Autenticacao.UsuarioAtual?.Login,
+                DataHora = DateTime.Now,
+                Alteracao = "Exclusão de Curso",
+                Detalhes = $"Excluído curso: {curso.Id}, Nome: {curso.Nome}"
+
+            });
+        }
+
+        private void btnExcluir_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtId.Text))
             {
@@ -223,12 +171,32 @@ namespace Dot.Net._6.WF.Calendario.Senac
             }
         }
 
-        private void CadastroCurso_FormClosing(object sender, FormClosingEventArgs e)
+        private void AbrirFormAgendaCurso()
         {
+            Agenda agenda_De_Curso = new Agenda();
+            agenda_De_Curso.Show();
+        }
 
+        private void btnSair_Click(object sender, EventArgs e)
+        {
+            var sair = MessageBox.Show("Deseja realmente sair?",
+           "Alerta",
+           MessageBoxButtons.YesNo,
+           MessageBoxIcon.Warning);
+
+            if (sair == DialogResult.Yes)
+            {
+
+                AbrirFormAgendaCurso();
+                this.Close();
+            }
+        }
+
+        private void CadCurso_FormClosing(object sender, FormClosingEventArgs e)
+        {
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                DialogResult fechar = MessageBox.Show("Deseja realmente fechar?.",
+                DialogResult fechar = MessageBox.Show("Deseja realmente sair?.",
                                                     "Cadastro de Curso",
                                                     MessageBoxButtons.YesNo,
                                                     MessageBoxIcon.Question);
@@ -246,5 +214,37 @@ namespace Dot.Net._6.WF.Calendario.Senac
                 }
             }
         }
+
+        private void Listar()
+        {
+            GridCadastroCurso.Rows.Clear();
+
+            using (var bd = new BancoDeDados())
+            {
+                var Curso = bd.Cursos.ToList();
+
+                foreach (var curso in Curso)
+                {
+                    GridCadastroCurso.Rows.Add(
+                        curso.Id,
+                        curso.Nome);
+                }
+
+            }
+        }
+
+        private void LimparCampos()
+        {
+            txtId.Text = String.Empty;
+            txtCadastroCurso.Text = String.Empty;
+        }
+
+        private void GridCadastroCurso_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            txtId.Text = GridCadastroCurso.CurrentRow.Cells[0].Value.ToString();
+            txtCadastroCurso.Text = GridCadastroCurso.CurrentRow.Cells[1].Value.ToString();
+        }
     }
+
+
 }

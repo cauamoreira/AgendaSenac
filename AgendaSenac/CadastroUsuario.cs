@@ -1,18 +1,14 @@
-﻿using AgendaSenac;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Dot.Net._6.WF.Calendario.Senac
+namespace AgendaSenac
 {
     public partial class CadastroUsuario : Form
     {
@@ -20,16 +16,28 @@ namespace Dot.Net._6.WF.Calendario.Senac
         public CadastroUsuario()
         {
             InitializeComponent();
-
             txtCpf.TextChanged += txtCpf_TextChanged;
             GridConsultarUsuario.CellClick += GridConsultarUsuario_CellClick;
             GridConsultarUsuario.CellClick += GridConsultarUsuario_CellClick;
             txtCpf.KeyDown += txtCpf_KeyDown;
-            this.Load += FrmCadastroUsuario_Load;
-
+            this.Load += CadUsuario_Load;
         }
 
-        private void btnSalvarUsuario_Click(object sender, EventArgs e)
+        private void AdicionarHistoricoNovoUsuario(BancoDeDados bd, Usuario usuario)
+        {
+            string login = Autenticacao.UsuarioAtual?.Login ?? "";
+
+            bd.Historicos.Add(new Historico
+            {
+                Login = login,
+                DataHora = DateTime.Now,
+                Alteracao = "Criação de Usuário",
+                Detalhes = $"Criado usuário: {usuario.Login}, CPF: {usuario.Cpf}, Data de Nascimento: {usuario.DataNascimento}, Ativo: {usuario.Ativo}, Administrador: {usuario.Administrador}"
+
+            });
+        }
+
+        private void btnAdicionarUsuario_Click(object sender, EventArgs e)
         {
             string nomeUsuarioNovo = txtUsuario.Text;
             string senhaNovo = txtSenha.Text;
@@ -99,68 +107,6 @@ namespace Dot.Net._6.WF.Calendario.Senac
                 LimparCampos();
 
             }
-        }
-
-        private void AdicionarHistoricoNovoUsuario(BancoDeDados bd, Usuario usuario)
-        {
-            string login = Autenticacao.UsuarioAtual?.Login ?? "";
-
-            bd.Historicos.Add(new Historico
-            {
-                Login = login,
-                DataHora = DateTime.Now,
-                Alteracao = "Criação de Usuário",
-                Detalhes = $"Criado usuário: {usuario.Login}, CPF: {usuario.Cpf}, Data de Nascimento: {usuario.DataNascimento}, Ativo: {usuario.Ativo}, Administrador: {usuario.Administrador}"
-
-            });
-        }
-
-        private void txtSenha_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == '\r')
-            {
-                btnSalvarUsuario_Click(this, new EventArgs());
-            }
-        }
-
-        private void LimparCampos()
-        {
-            txtUsuario.Clear();
-            txtCpf.Clear();
-            txtSenha.Clear();
-            chkAdministrador.Checked = false;
-            chkAtivo.Checked = false;
-        }
-
-        private void FrmCadastroUsuario_Load(object sender, EventArgs e)
-        {
-            Listar();
-
-        }
-
-        private void Listar()
-        {
-            GridConsultarUsuario.Rows.Clear();
-
-            using (var bd = new BancoDeDados())
-            {
-                var usuarios = bd.Usuarios.ToList();
-
-                foreach (var usuario in usuarios)
-                {
-                    GridConsultarUsuario.Rows.Add(
-                        usuario.Id,
-                        usuario.Login,
-                        usuario.Cpf,
-                        usuario.DataNascimento,
-                        usuario.Senha,
-                        usuario.Ativo,
-                        usuario.Administrador);
-
-                }
-
-            }
-
         }
 
         private void btnAlterar_Click(object sender, EventArgs e)
@@ -259,13 +205,46 @@ namespace Dot.Net._6.WF.Calendario.Senac
                     }
                 }
             }
+        }
+
+        private void LimparCampos()
+        {
+            txtUsuario.Clear();
+            txtCpf.Clear();
+            txtSenha.Clear();
+            chkAdministrador.Checked = false;
+            chkAtivo.Checked = false;
+        }
+
+        private void Listar()
+        {
+            GridConsultarUsuario.Rows.Clear();
+
+            using (var bd = new BancoDeDados())
+            {
+                var usuarios = bd.Usuarios.ToList();
+
+                foreach (var usuario in usuarios)
+                {
+                    GridConsultarUsuario.Rows.Add(
+                        usuario.Id,
+                        usuario.Login,
+                        usuario.Cpf,
+                        usuario.DataNascimento,
+                        usuario.Senha,
+                        usuario.Ativo,
+                        usuario.Administrador);
+
+                }
+
+            }
 
         }
 
         private void AbrirAgendaCursos()
         {
-            Agenda agenda = new Agenda();
-            agenda.Show();
+            Agenda agenda_De_Curso = new Agenda();
+            agenda_De_Curso.Show();
         }
 
         private void btnSair_Click(object sender, EventArgs e)
@@ -284,53 +263,6 @@ namespace Dot.Net._6.WF.Calendario.Senac
 
             }
         }
-
-        private void GridConsultarUsuario_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-
-            int cpfColumnIndex = 2;
-            int senhaColumnIndex = 4;
-
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && Autenticacao.UsuarioAtual != null)
-            {
-
-                if (GridConsultarUsuario.Rows[e.RowIndex].Cells[1].Value != null)
-                {
-                    string usuarioLogadoLogin = Autenticacao.UsuarioAtual.Login;
-                    string loginNaLinha = GridConsultarUsuario.Rows[e.RowIndex].Cells[1].Value.ToString();
-
-                    if (!loginNaLinha.Equals(usuarioLogadoLogin, StringComparison.OrdinalIgnoreCase))
-                    {
-
-                        if (e.ColumnIndex == cpfColumnIndex && GridConsultarUsuario.Rows[e.RowIndex].Cells[cpfColumnIndex].Value != null)
-                        {
-                            e.Value = "******";
-                        }
-
-                        if (e.ColumnIndex == senhaColumnIndex && GridConsultarUsuario.Rows[e.RowIndex].Cells[senhaColumnIndex].Value != null)
-                        {
-                            e.Value = "******";
-                        }
-                    }
-
-
-                }
-            }
-
-            List<int> colunaBoolIndex = new List<int> { 5, 6 };
-
-            if (e.RowIndex >= 0 && colunaBoolIndex.Contains(e.ColumnIndex))
-
-            {
-                if (e.Value != null && e.Value is bool)
-                {
-                    bool valorBool = (bool)e.Value;
-                    e.Value = valorBool ? "Sim" : "Não";
-                    e.FormattingApplied = true;
-                }
-            }
-        }
-
 
         private void GridConsultarUsuario_CellClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -365,7 +297,7 @@ namespace Dot.Net._6.WF.Calendario.Senac
             }
         }
 
-        private void TextOnly(object sender, KeyPressEventArgs e)
+        private void txtUsuario_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !
                   char.IsLetter(e.KeyChar) && !
@@ -381,8 +313,6 @@ namespace Dot.Net._6.WF.Calendario.Senac
 
         private void txtCpf_KeyPress(object sender, KeyPressEventArgs e)
         {
-
-
             if (e.KeyChar == '\b')
             {
                 e.Handled = false;
@@ -410,7 +340,6 @@ namespace Dot.Net._6.WF.Calendario.Senac
 
         private void txtCpf_TextChanged(object sender, EventArgs e)
         {
-
             string cpfDigito = new string(txtCpf.Text.Where(char.IsDigit).ToArray());
 
 
@@ -439,7 +368,6 @@ namespace Dot.Net._6.WF.Calendario.Senac
 
             txtCpf.SelectionStart = txtCpf.Text.Length;
         }
-
 
         private void txtCpf_Leave(object sender, EventArgs e)
         {
@@ -471,10 +399,9 @@ namespace Dot.Net._6.WF.Calendario.Senac
 
                 e.Handled = true;
             }
-
         }
 
-        private void CadastroUsuario_FormClosing(object sender, FormClosingEventArgs e)
+        private void CadUsuario_FormClosing(object sender, FormClosingEventArgs e)
         {
 
             if (e.CloseReason == CloseReason.UserClosing)
@@ -491,34 +418,58 @@ namespace Dot.Net._6.WF.Calendario.Senac
                 else
                 {
 
-                    
+                    Agenda agenda_De_Curso = new Agenda();
+                    agenda_De_Curso.Show();
+                    this.Hide();
                 }
             }
         }
+
+        private void GridConsultarUsuario_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            int cpfColumnIndex = 2;
+            int senhaColumnIndex = 4;
+
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && Autenticacao.UsuarioAtual != null)
+            {
+
+                if (GridConsultarUsuario.Rows[e.RowIndex].Cells[1].Value != null)
+                {
+                    string usuarioLogadoLogin = Autenticacao.UsuarioAtual.Login;
+                    string loginNaLinha = GridConsultarUsuario.Rows[e.RowIndex].Cells[1].Value.ToString();
+
+                    if (!loginNaLinha.Equals(usuarioLogadoLogin, StringComparison.OrdinalIgnoreCase))
+                    {
+
+                        if (e.ColumnIndex == cpfColumnIndex && GridConsultarUsuario.Rows[e.RowIndex].Cells[cpfColumnIndex].Value != null)
+                        {
+                            e.Value = "******";
+                        }
+
+                        if (e.ColumnIndex == senhaColumnIndex && GridConsultarUsuario.Rows[e.RowIndex].Cells[senhaColumnIndex].Value != null)
+                        {
+                            e.Value = "******";
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+        private void txtSenha_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\r')
+            {
+                btnAdicionarUsuario_Click(this, new EventArgs());
+            }
+        }
+
+        private void CadUsuario_Load(object sender, EventArgs e)
+        {
+            Listar();
+        }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 

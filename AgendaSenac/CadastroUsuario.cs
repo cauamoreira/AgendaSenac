@@ -262,7 +262,11 @@ namespace Dot.Net._6.WF.Calendario.Senac
 
         }
 
- 
+        private void AbrirAgendaCursos()
+        {
+            Agenda agenda = new Agenda();
+            agenda.Show();
+        }
 
         private void btnSair_Click(object sender, EventArgs e)
         {
@@ -275,6 +279,7 @@ namespace Dot.Net._6.WF.Calendario.Senac
 
             if (iSair == DialogResult.Yes)
             {
+                AbrirAgendaCursos();
                 this.Close();
 
             }

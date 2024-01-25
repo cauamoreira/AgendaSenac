@@ -296,6 +296,7 @@
             gridCurso.RowTemplate.Height = 25;
             gridCurso.Size = new Size(1214, 383);
             gridCurso.TabIndex = 17;
+            gridCurso.CellClick += gridCurso_CellClick;
             // 
             // Column1
             // 

@@ -12,6 +12,7 @@ using DocumentFormat.OpenXml.Vml;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Globalization;
 using System.Collections.ObjectModel;
+using Dot.Net._6.WF.Calendario.Senac;
 
 namespace AgendaSenac
 {
@@ -761,7 +762,16 @@ namespace AgendaSenac
 
         private void cadastrarUsuárioToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-
+            if (Autenticacao.UsuarioTemPermissaoAdministrador())
+            {
+                CadastroUsuario cadastroUsuario = new CadastroUsuario();
+                cadastroUsuario.Show();
+                this.Hide();
+            }
+            else
+            {
+                MessageBox.Show("Você não tem acesso administrador.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void acessoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -780,7 +790,10 @@ namespace AgendaSenac
 
         private void cadastrarCursoToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            CadastroCurso cadastroCurso = new CadastroCurso(this);
 
+            cadastroCurso.Show();
+            this.Hide();
         }
 
 
@@ -788,6 +801,21 @@ namespace AgendaSenac
         {
             CarregarCombos();
             Listar();
+        }
+
+        private void gridCurso_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            txtId.Text = gridCurso.CurrentRow.Cells[0].Value.ToString();
+            cmbCurso.Text = gridCurso.CurrentRow.Cells[1].Value.ToString();
+            dtpInicio.Text = gridCurso.CurrentRow.Cells[2].Value.ToString();
+            dtpFim.Text = gridCurso.CurrentRow.Cells[3].Value.ToString();
+            clbDias.Text = gridCurso.CurrentRow.Cells[4].Value.ToString();
+            cmbHorario.Text = gridCurso.CurrentRow.Cells[5].Value.ToString();
+            txtMeta.Text = gridCurso.CurrentRow.Cells[6].Value.ToString();
+            txtRealizado.Text = gridCurso.CurrentRow.Cells[7].Value.ToString();
+            mtbValor.Text = gridCurso.CurrentRow.Cells[8].Value.ToString();
+            txtTurma.Text = gridCurso.CurrentRow.Cells[9].Value.ToString();
+            txtSala.Text = gridCurso.CurrentRow.Cells[10].Value.ToString();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace AgendaSenac
             picSenha.Click += picSenha_Click;
         }
 
+
         private async void btnEntrar_Click(object sender, EventArgs e)
         {
             string usuario = txtUsuario.Text;
@@ -22,7 +23,7 @@ namespace AgendaSenac
 
             using (var bd = new BancoDeDados())
             {
-                if (!bd.Usuarios.Any())
+                if (bd.Usuarios.Any())
                 {
                     bd.Usuarios.Add(new Usuario
                     {
